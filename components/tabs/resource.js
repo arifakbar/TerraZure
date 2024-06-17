@@ -4,6 +4,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import camelCaseToCapitalizeWithSpace from "@/lib/camelCaseToCapital";
 import { Edit2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import ResourceModal from "../modals/resource";
 
 export default function ResourceTabs({ resources }) {
   const router = useRouter();
@@ -20,7 +22,7 @@ export default function ResourceTabs({ resources }) {
     info: resourcesByTypes[type],
   }));
   const l = resourcesArray.length;
-  console.log(resourcesArray);
+  // console.log(resourcesArray);
 
   return (
     <Tabs defaultValue="all" className="w-full">
@@ -44,12 +46,7 @@ export default function ResourceTabs({ resources }) {
                 key={r._id}
                 className="w-full flex items-center justify-between gap-3"
               >
-                <p
-                  className="w-full shadow-md p-2 rounded-md my-2 cursor-pointer border-2 text-sm font-semibold text-gray-500"
-                  onClick={() => router.push(`/resource/${r._id}`)}
-                >
-                  {r.name}
-                </p>
+                <ResourceModal title={r.name} id={r._id} />
                 <button className="shadow-md p-2 rounded-md cursor-pointer border-2 text-sm font-semibold text-green-500">
                   <Edit2 size={22} />
                 </button>
@@ -65,7 +62,8 @@ export default function ResourceTabs({ resources }) {
             <TabsContent value={r.type} key={j}>
               <div
                 className="w-full flex items-center justify-between gap-3"
-                onClick={() => router.push(`/resource/${n.id}`)}
+                // onClick={() => router.push(`/resource/${n.id}`)}
+                onClick={() => alert(n.id)}
               >
                 <p className="w-full shadow-md p-2 rounded-md my-1 cursor-pointer border-2 text-sm font-semibold text-gray-500">
                   {n.name}
