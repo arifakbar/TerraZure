@@ -1,15 +1,5 @@
 "use client";
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-
 import { LoadingSpinner } from "@/components/loading-spinner";
 import ResourceTabs from "@/components/tabs/resource";
 import { Button } from "@/components/ui/button";
@@ -18,7 +8,6 @@ import { Separator } from "@/components/ui/separator";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { resources } from "@/utils";
 import Link from "next/link";
 
 export default function Subscription() {
@@ -26,6 +15,9 @@ export default function Subscription() {
   const [loading, setLoading] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [keepProducts, setKeppProducts] = useState([]);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const limit = 7;
 
   const sid = useSelector((state) => state.sub.sid);
 
@@ -36,15 +28,28 @@ export default function Subscription() {
   const loadSub = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`/api/subscription/${sid}`);
+      const res = await axios.get(`/api/subscription/${sid}?offset=${offset}`);
       setSubscription(res.data.data);
-      console.log(res.data.data);
-      setFilterProducts(res.data.data.resources);
-      setKeppProducts(res.data.data.resources);
+      setFilterProducts((prevFilteredProducts) => [
+        ...prevFilteredProducts,
+        ...res.data.data.resources,
+      ]);
+      setKeppProducts((prevKeepProducts) => [
+        ...prevKeepProducts,
+        ...res.data.data.resources,
+      ]);
+      if (res.data.data.resources.length < limit) setHasMore(false);
+      setOffset((prevOffset) => prevOffset + limit);
       setLoading(false);
     } catch (err) {
       setLoading(false);
       console.log(err);
+    }
+  };
+
+  const loadMore = () => {
+    if (!loading && hasMore) {
+      loadSub();
     }
   };
 
@@ -95,26 +100,15 @@ export default function Subscription() {
           {keepProducts.length < 1 ? (
             <p>No resources created currently. Create some.</p>
           ) : (
-            <ResourceTabs resources={filterProducts} />
+            <ResourceTabs
+              resources={filterProducts}
+              loadMore={loadMore}
+              hasMore={hasMore}
+              loading={loading}
+            />
           )}
         </div>
       )}
-      {/* <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination> */}
     </div>
   );
 }

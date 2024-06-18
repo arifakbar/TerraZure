@@ -3,12 +3,15 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import camelCaseToCapitalizeWithSpace from "@/lib/camelCaseToCapital";
 import { Edit2, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import ResourceModal from "../modals/resource";
+import { Button } from "../ui/button";
 
-export default function ResourceTabs({ resources }) {
-  const router = useRouter();
+export default function ResourceTabs({
+  resources,
+  loading,
+  hasMore,
+  loadMore,
+}) {
   const resourcesByTypes = {};
   resources.forEach((r) => {
     if (resourcesByTypes.hasOwnProperty(r.type)) {
@@ -22,7 +25,6 @@ export default function ResourceTabs({ resources }) {
     info: resourcesByTypes[type],
   }));
   const l = resourcesArray.length;
-  // console.log(resourcesArray);
 
   return (
     <Tabs defaultValue="all" className="w-full">
@@ -38,7 +40,7 @@ export default function ResourceTabs({ resources }) {
           </TabsTrigger>
         ))}
       </TabsList>
-      <div className="mt-2 h-[60vh] overflow-auto w-full">
+      <div className="mt-2 h-[60vh] w-full">
         <TabsContent value="all">
           {resources.map((r) => {
             return (
@@ -56,18 +58,17 @@ export default function ResourceTabs({ resources }) {
               </div>
             );
           })}
+          {hasMore && !loading && (
+            <Button className="mb-2" onClick={loadMore}>
+              Load More
+            </Button>
+          )}
         </TabsContent>
         {resourcesArray.map((r) => {
           return r.info.map((n, j) => (
             <TabsContent value={r.type} key={j}>
-              <div
-                className="w-full flex items-center justify-between gap-3"
-                // onClick={() => router.push(`/resource/${n.id}`)}
-                onClick={() => alert(n.id)}
-              >
-                <p className="w-full shadow-md p-2 rounded-md my-1 cursor-pointer border-2 text-sm font-semibold text-gray-500">
-                  {n.name}
-                </p>
+              <div className="w-full flex items-center justify-between gap-3">
+                <ResourceModal title={n.name} id={n.id} />
                 <button className="shadow-md p-2 rounded-md cursor-pointer border-2 text-sm font-semibold text-green-500">
                   <Edit2 size={22} />
                 </button>

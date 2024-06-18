@@ -6,12 +6,15 @@ import { NextResponse } from "next/server";
 export async function GET(req, { params }) {
   try {
     const { id } = params;
-
+    const offset = req.nextUrl.searchParams.get("offset");
     const session = await getServerSession();
     if (!session.user)
       return NextResponse.json({ error: "Unauthenticated", status: 401 });
 
-    const sub = await Subscription.findById(id).populate("resources");
+    const sub = await Subscription.findById(id).populate({
+      path: "resources",
+      options: { limit: 7, skip: offset },
+    });
     if (!sub)
       return NextResponse.json({
         error: "No Subscription found!",
