@@ -5,6 +5,8 @@ import camelCaseToCapitalizeWithSpace from "@/lib/camelCaseToCapital";
 import { Edit2, Trash2 } from "lucide-react";
 import ResourceModal from "../modals/resource";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import axios from "axios";
 
 export default function ResourceTabs({
   resources,
@@ -20,11 +22,22 @@ export default function ResourceTabs({
       resourcesByTypes[r.type] = [{ id: r._id, name: r.name }];
     }
   });
+
   const resourcesArray = Object.keys(resourcesByTypes).map((type) => ({
     type,
-    info: resourcesByTypes[type],
   }));
   const l = resourcesArray.length;
+
+  const [infoByType, setInfoByType] = useState([]);
+
+  const fetchResourceByType = async (type) => {
+    try {
+      const res = await axios.get(`/api/resource/type/${type}`);
+      setInfoByType(res.data.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Tabs defaultValue="all" className="w-full">
@@ -35,6 +48,7 @@ export default function ResourceTabs({
             value={r.type}
             key={i}
             className={`md:w-[calc(100vw/${l})]`}
+            onClick={() => fetchResourceByType(r.type)}
           >
             {camelCaseToCapitalizeWithSpace(r.type)}
           </TabsTrigger>
@@ -59,16 +73,16 @@ export default function ResourceTabs({
             );
           })}
           {hasMore && !loading && (
-            <Button className="mb-2" onClick={loadMore}>
-              Load More
-            </Button>
+            <p className="my-3 text-sm text-gray-500" onClick={loadMore}>
+              Load more...
+            </p>
           )}
         </TabsContent>
-        {resourcesArray.map((r) => {
-          return r.info.map((n, j) => (
+        {infoByType.map((r, j) => {
+          return (
             <TabsContent value={r.type} key={j}>
               <div className="w-full flex items-center justify-between gap-3">
-                <ResourceModal title={n.name} id={n.id} />
+                <ResourceModal title={r.name} id={r._id} />
                 <button className="shadow-md p-2 rounded-md cursor-pointer border-2 text-sm font-semibold text-green-500">
                   <Edit2 size={22} />
                 </button>
@@ -77,7 +91,7 @@ export default function ResourceTabs({
                 </button>
               </div>
             </TabsContent>
-          ));
+          );
         })}
       </div>
     </Tabs>

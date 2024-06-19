@@ -28,10 +28,8 @@ export default function ResourceModal({ title, id }) {
     try {
       setLoading(true);
       const res = await axios.get(`/api/resource/single/${id}`);
-      // console.log(res.data.data);
       setResource(res.data.data);
       const response = await axios.get(`/api/file/${res.data.data.name}`);
-      // console.log(response);
       if (response.data.status === 200) {
         setContent(response.data.content);
       } else {

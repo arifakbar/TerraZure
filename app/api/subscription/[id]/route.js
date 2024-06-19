@@ -13,6 +13,7 @@ export async function GET(req, { params }) {
 
     const sub = await Subscription.findById(id).populate({
       path: "resources",
+      select: "name _id type",
       options: { limit: 7, skip: offset },
     });
     if (!sub)
