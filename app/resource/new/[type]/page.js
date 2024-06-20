@@ -21,7 +21,7 @@ export default function ({ params }) {
   };
 
   return (
-    <div className="flex w-full h-[calc(100vh-60px)] items-center justify-center">
+    <div className="flex w-full min-h-[calc(100vh-60px)] items-center justify-center">
       <RenderForm />
     </div>
   );

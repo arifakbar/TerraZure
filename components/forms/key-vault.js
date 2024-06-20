@@ -134,7 +134,7 @@ export default function KeyVaultForm({ type, sid }) {
       <LoadingSpinner />
     </div>
   ) : (
-    <div className="p-4 border-2 border-gray-200 shadow-md rounded-md w-[40%]">
+    <div className="p-4 border-2 border-gray-200 shadow-md rounded-md w-[40%] mt-4">
       <h4 className="text-xl text-center font-bold mb-3 underline">
         Key Vault
       </h4>
