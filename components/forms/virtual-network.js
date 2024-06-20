@@ -30,7 +30,6 @@ import axios from "axios";
 import { toast } from "../ui/use-toast";
 import { useEffect, useState } from "react";
 import { LoadingSpinner } from "../loading-spinner";
-import { supportedLocations } from "@/utils";
 import { extractErrorCode } from "@/lib/extractCodeFromError";
 import { setRGLoc } from "@/lib/setRGLoc";
 

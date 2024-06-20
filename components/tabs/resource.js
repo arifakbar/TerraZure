@@ -73,9 +73,12 @@ export default function ResourceTabs({
             );
           })}
           {hasMore && !loading && (
-            <p className="my-3 text-sm text-gray-500" onClick={loadMore}>
-              Load more...
-            </p>
+            <Button
+              className="mt-2 mb-6 cursor-pointer text-sm"
+              onClick={loadMore}
+            >
+              Load more
+            </Button>
           )}
         </TabsContent>
         {infoByType.map((r, j) => {

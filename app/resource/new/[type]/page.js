@@ -3,6 +3,7 @@
 import KeyVaultForm from "@/components/forms/key-vault";
 import ResourceGroupForm from "@/components/forms/resource-group";
 import StorageAccountForm from "@/components/forms/storage-account";
+import VirtualMachineForm from "@/components/forms/virtual-machine";
 import VirtualNetworkForm from "@/components/forms/virtual-network";
 import { useSelector } from "react-redux";
 
@@ -18,6 +19,8 @@ export default function ({ params }) {
     else if (type === "virtualNetwork")
       return <VirtualNetworkForm type={type} sid={sid} />;
     else if (type === "keyVault") return <KeyVaultForm type={type} sid={sid} />;
+    else if (type === "virtualMachine")
+      return <VirtualMachineForm type={type} sid={sid} />;
   };
 
   return (
