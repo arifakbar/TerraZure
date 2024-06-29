@@ -46,7 +46,7 @@ const formSchema = z.object({
   location: z.string().min(2, "Location is required"),
   availabilityZone: z.string(1, "Zone is required"), // 1,2,3
   size: z.string(2, "Valid size is required"),
-  username: z
+  adminUsername: z
     .string()
     .min(1, "Name is required")
     .max(20, "Name cannot be more than 20 characters long")
@@ -54,7 +54,7 @@ const formSchema = z.object({
       /^[a-zA-Z0-9-]*(?<![.])$/,
       "Username must only contain alphanumeric characters and dashes, cannot contain special characters /\"[]:|<>+=;,?*@&, and cannot end with a period ('.')."
     ),
-  password: z
+  adminPassword: z
     .string()
     .min(12, "Password must be at least 12 characters long")
     .max(123, "Password cannot be more than 123 characters long")
@@ -67,10 +67,20 @@ const formSchema = z.object({
       ];
       return checks.filter(Boolean).length >= 3;
     }, "Password must have at least 3 of the following: 1 lowercase character, 1 uppercase character, 1 number, and 1 special character"),
-  storageAccountType: z.string(2, "Account type is required"), // Standard_LRS, StandardSSD_LRS,    Premium_LRS, StandardSSD_ZRS, Premium_ZRS
+  //os-disk
+  osDiskSize: z.string(2, "Size is required"), //32,64,128,256,512,1024,2048GB
+  osDiskType: z.string(2, "Account type is required"), // Standard_LRS, StandardSSD_LRS,    Premium_LRS, StandardSSD_ZRS, Premium_ZRS
   caching: z.string(2, "caching type is required"), //None, ReadOnly, ReadWrite
-  sku: z.string(2, "SKU is required"),
-  version: z.string(2, "version is required"),
+  vmSize: z.string(2, "SKU is required"), //Includes publisher,offer, sku and version
+  bootDiagnostics: z.string(2), //Enabled, Disabled, Enable with custom storage account
+  diagnosticsStorageAccount: z.string(), //optional->show when custom and choose from avaiable storage accounts in the rg.
+  //Need to add for DataDisks too.
+  //------------------------
+  //Networking
+  virtualNetwork: z.string(2, "Virtual Network is required"), //VNet's in current rg.
+  subnet: z.string(2, "Subnet is required"), //Subnet inside VNet
+  publicIP: z.boolean(2), //Enabled or disabled
+  networkSecurityGroup: z.string(), //Present in current VNet
 });
 
 export default function VirtualMachineForm({ type, sid }) {
